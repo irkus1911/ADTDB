@@ -86,6 +86,8 @@ public class DaoImplementation implements Dao{
     private final String buscarIdCliente = "select * from customer where id = ?";
     private final String buscarMovimientos = "select * from movement where account_id = ?";
     private final String consultarIdCuentaCliente= "select accounts_id from customer_account where customers_id=?";
+    private final String realizarMovimiento = "insert into movement (id, amount, balance, description, timestamp, account_id) values (?, ?, ?, ?, ?, ?)";
+    private final String buscarIdCuenta = "select * from account where id = ?";
    
   
    
@@ -130,6 +132,35 @@ public class DaoImplementation implements Dao{
             Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
         return cli;
+    }
+    
+    private Long comprobarIdCuenta(Account acc){
+        
+        ResultSet rs = null;
+        long id = 0;
+       
+          try {
+            con = this.openConnection();
+        } catch (ConnectException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            
+            stat = con.prepareStatement(buscarIdCuenta);
+            stat.setLong(1, acc.getId());
+            rs = stat.executeQuery();
+            if (rs == null) {
+                return null;
+            } else {
+                id=rs.getLong("account.id");
+                
+            }
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return id;
     }
     
     @Override
@@ -232,7 +263,44 @@ public class DaoImplementation implements Dao{
 
     @Override
     public void realizarMovimiento(Account acco) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet rs = null;    
+        Account acc = new Account();
+        
+        try {
+            con = this.openConnection();
+        } catch (ConnectException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            
+            stat = con.prepareStatement(realizarMovimiento);
+            
+            stat.setString(1, Util.introducirCadena("Introduce la id: "));
+            stat.setString(2, Util.introducirCadena("Introduce la cantidad: "));
+            stat.setString(3, Util.introducirCadena("Introduce el balance: "));
+            stat.setString(4, Util.introducirCadena("Introduce una descripcion: "));
+            stat.setString(5, Util.introducirCadena("Introduce la fecha y hora: "));
+            
+            acc.setId(Util.leerLong("Introduce el id de la cuenta: "));
+            
+            while(comprobarIdCuenta(acc)==null || comprobarIdCuenta(acc)==0){
+                System.out.println("No existe esa id de cuenta, vuelva a intentarlo");
+                acc.setId(Util.leerLong("Introduce el id de la cuenta: "));
+            }
+            
+            stat.setLong(6, Util.leerLong("Introduce el id de la cuenta: "));
+            
+            rs = stat.executeQuery();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try {
+            this.closeConnection();
+        } catch (ConnectException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

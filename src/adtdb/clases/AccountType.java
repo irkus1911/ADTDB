@@ -9,8 +9,8 @@ package adtdb.clases;
  *
  * @author 2dam
  */
-class AccountType {
+public enum AccountType {
     
-    
+    STANDARD,CREDIT
     
 }

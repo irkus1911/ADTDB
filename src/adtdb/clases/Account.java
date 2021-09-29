@@ -78,7 +78,5 @@ public class Account implements Serializable{
     public void setType(AccountType type) {
         this.type = type;
     }
-
-    
     
 }

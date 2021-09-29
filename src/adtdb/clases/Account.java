@@ -5,13 +5,14 @@
  */
 package adtdb.clases;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
  *
  * @author 2dam
  */
-public class Account implements java.io.Serializable{
+public class Account implements Serializable{
     
     private long id;
     private String description;

@@ -1,0 +1,375 @@
+package adtdb.utilidades;
+
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Scanner;
+
+public class Util {
+
+	public static String introducirCadena(){
+		 String cadena="";
+		 boolean error=false;
+		 InputStreamReader entrada =new InputStreamReader(System.in);
+		 BufferedReader teclado= new BufferedReader(entrada);
+		do {
+			try {
+				cadena=teclado.readLine();
+			} catch (IOException e) {
+				error=true;
+				System.out.println("Error en la entrada de datos, introduzca los datos de nuevo");
+			}
+		}while(error);	
+		 return cadena;
+	}
+
+	public static String introducirCadena(String mensaje){
+		 String cadena="";
+		 InputStreamReader entrada =new InputStreamReader(System.in);
+		 BufferedReader teclado= new BufferedReader(entrada);
+		 
+		 System.out.println(mensaje);
+		try {
+			cadena=teclado.readLine();
+		} catch (IOException e) {
+			System.out.println("Error en la entrada de datos");
+		}
+		 return cadena;
+	}
+
+	public static String leerString(int x){
+		String cadena = null;
+		boolean ok;
+		do{
+			ok = true;
+			cadena=introducirCadena();
+			if(cadena.length()>x){
+				System.out.println("Error, longitud superior a la permitida. Introduzca de nuevo: ");
+				ok = false;
+			}
+		}while(!ok);
+		return cadena;
+	}
+	
+	public static char leerChar(){
+		boolean error=false;
+		String letra;
+		
+		do{
+			error=false;
+			letra=introducirCadena();
+			if(letra.length()!=1){
+				System.out.println("Error, introduce un car�cter: ");
+				error=true;
+			}
+			
+		}while(error);
+		return letra.charAt(0);
+	}
+
+	public static char leerChar(String mensaje)
+	{
+		char letra;
+		String frase;
+		System.out.println(mensaje);
+		do {
+			
+			frase=introducirCadena();
+			if (frase.length()!=1) {
+				System.out.println("Error, introduce un �nico car�cter: ");
+			}
+		}while (frase.length()!=1);
+		letra=frase.charAt(0);
+		
+		return letra;
+	}
+	
+	public static char leerChar (char x, char y)
+	{
+
+		char letra;
+		String frase;
+		do{
+			do {
+				frase=introducirCadena();
+				if (frase.length()!=1) {
+					System.out.println("Error, introduce un �nico car�cter: ");
+				}
+			}while (frase.length()!=1);
+			letra=frase.charAt(0);
+			if(!(letra == x || letra==y))
+			{
+				System.out.println("Error car�cter no Valido");
+			}
+		}while (!(letra == x || letra==y));
+		return letra;		
+	}
+	
+
+	public static char leerCharArray(char caracteres[]){
+		int i;
+		boolean error=false;
+		String letra;
+		char aux=0;
+		
+		do{
+			error=false;
+			letra=introducirCadena();
+			if(letra.length()!=1){
+				System.out.println("Error, introduce un car�cter: ");
+				error=true;
+			}
+			else{
+				aux=letra.charAt(0);
+				for(i=0;i<caracteres.length;i++){
+					if(Character.toUpperCase(caracteres[i])==Character.toUpperCase(aux)){
+						break;
+					}
+				}
+				if(i==caracteres.length){
+					error=true;
+					System.out.println("Error, el car�cter introducido no es valido. ");
+				}
+			}
+		}while(error);
+		return aux;
+	}
+	public static int leerInt(){
+		int num=0;
+		boolean error;
+		do{
+			error=false;
+			try{
+				num=Integer.parseInt(introducirCadena());
+			}
+			catch(NumberFormatException e){
+				System.out.println("Error, el dato no es num�rico. Introduce de nuevo: ");
+				error=true;
+			}
+		}while(error);
+		return num;
+	}
+
+	public static int leerInt(String mensaje){
+		int num=0;
+		boolean error;
+		System.out.println(mensaje);
+		do{
+			error=false;
+			try{
+				num=Integer.parseInt(introducirCadena());
+			}
+			catch(NumberFormatException e){
+				System.out.println("Error, el dato no es num�rico. Introduce de nuevo: ");
+				error=true;
+			}
+		}while(error);
+		return num;
+	}
+	
+	public static int leerInt(int x, int y){
+		int num;
+		boolean error;
+		do{
+			error=false;
+			try{
+				num=Integer.parseInt(introducirCadena());
+			}
+			catch(NumberFormatException e){
+				System.out.println("Error, el dato no es num�rico. Introduce de nuevo: ");
+				error=true;
+				num=x;
+			}
+			if (num<x || num>y){
+				System.out.println("Error, dato fuera de rango. Introduce de nuevo: ");
+				error=true;
+				
+			}
+		}while(error);
+		return num;
+	}
+
+	public static int leerInt(String mensaje,int x, int y){
+		int num;
+		boolean error;
+		System.out.println(mensaje);
+		do{
+			error=false;
+			try{
+				num=Integer.parseInt(introducirCadena());
+			}
+			catch(NumberFormatException e){
+				System.out.println("Error, el dato no es num�rico. Introduce de nuevo: ");
+				error=true;
+				num=x;
+			}
+			if (num<x || num>y){
+				System.out.println("Error, dato fuera de rango. Introduce de nuevo: ");
+				error=true;
+				
+			}
+		}while(error);
+		return num;
+	}
+
+	public static float leerFloat(){
+		float num=0;
+		boolean error;
+		do{
+			error=false;
+			try{
+				num=Float.parseFloat(introducirCadena());
+			}
+			catch(NumberFormatException e){
+				System.out.println("Error, el dato no es num�rico. Introduce de nuevo: ");
+				error=true;
+			}
+		}while(error);
+		return num;
+	}
+
+	public static float leerFloat(String mensaje){
+		float num=0;
+		boolean ok=true;
+		System.out.println(mensaje);
+		do{
+			ok=true;
+			
+			try{
+				num=Float.parseFloat(introducirCadena());
+			}
+			catch(NumberFormatException e){
+				ok=false;	
+				System.out.println("Error al introducir un n�mero");
+			}
+		}while (!ok);
+		return num;
+	}
+
+	public static float leerFloat(float x, float y){
+		float num;
+		boolean error;
+		do{
+			error=false;
+			try{
+				num=Float.parseFloat(introducirCadena());
+			}
+			catch(NumberFormatException e){
+				System.out.println("Error, el dato no es num�rico. Introduce de nuevo: ");
+				error=true;
+				num=x;
+			}
+			if (num<x || num>y){
+				System.out.println("Error, dato fuera de rango. Introduce de nuevo: ");
+				error=true;
+				
+			}
+		}while(error);
+		return num;
+	}
+	
+	public static double leerDouble(double x, double y) {
+		double num = 0;
+		boolean ok;
+		do {
+			try {
+				ok = true;
+				num =Double.parseDouble(introducirCadena());
+
+			} catch (NumberFormatException e) {
+				System.out.println("Hay que introducir n�meros");
+				ok = false;
+				num = x;
+
+			}
+			if (num < x || num > y) {
+				System.out.println("Dato fuera de rango, introduce entre" + x + " y " + y);
+				ok = false;
+			}
+		} while (!ok);
+		return num;
+	}
+
+	public static double leerDouble() {
+		double fNumero = 0;
+		boolean ok;
+		do {
+			try {
+				ok = true;
+				fNumero = Double.parseDouble(introducirCadena());
+			} catch (NumberFormatException e) {
+				System.out.println("Error al introducir el numero");
+				ok = false;
+			}
+		} while (!ok);
+		return fNumero;
+	}
+	
+	public static boolean esBoolean(){
+		String respu;
+		do{
+			respu=introducirCadena().toLowerCase();
+		}while(!respu.equals("0") &&!respu.equals("1") && !respu.equals("si") && !respu.equals("no") && !respu.equals("s") && !respu.equals("n") && !respu.equals("true") && !respu.equals("false") );
+		if(respu.equals("1")||respu.equals("si")||respu.equals("s")||respu.equals("true")){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+
+
+	public static LocalDate leerFecha() {
+		String fechaAux;
+		LocalDate fecha = LocalDate.now();
+		boolean error;
+		DateTimeFormatter formateador=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		do{
+	 		error=false;
+	  		fechaAux=Util.introducirCadena();
+	 		 try{		
+	   			fecha=LocalDate.parse(fechaAux, formateador);
+	 		 } catch(DateTimeParseException e){
+	  	 	error=true;
+			System.out.println("Error,Introduce fecha con formato dd/mm/aaaa: ");
+	 		 }
+		}while (error);
+		return fecha;
+	}
+
+	public static LocalDate leerFecha(String mensaje) {
+		String fechaAux;
+		LocalDate fechaNac = LocalDate.now();
+		boolean error;
+		DateTimeFormatter formateador=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		System.out.println(mensaje);
+		do{
+	  		error=false;
+			fechaAux=Util.introducirCadena();
+	  		try{		
+	   			fechaNac=LocalDate.parse(fechaAux, formateador);
+			} catch(DateTimeParseException e){
+	   		error=true;
+			System.out.println("Error,Introduce fecha con formato dd/mm/aaaa: ");
+			}
+		}while (error);
+		return fechaNac;
+	}
+
+	public static String fechaToString(LocalDate fecha) {
+		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		String wfecha;
+		
+		wfecha = fecha.format(formateador);
+		
+		return wfecha;
+	}
+
+	
+	
+}

@@ -5,11 +5,13 @@
  */
 package adtdb.clases;
 
+import java.io.Serializable;
+
 /**
  *
  * @author 2dam
  */
-public class Customer implements java.io.Serializable{
+public class Customer implements Serializable{
     
     private int zip;
     private long id,phone;

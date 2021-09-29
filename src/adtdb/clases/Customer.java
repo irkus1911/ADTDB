@@ -24,7 +24,7 @@ public class Customer implements Serializable{
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -40,7 +40,7 @@ public class Customer implements Serializable{
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(long phone) {
         this.phone = phone;
     }
 

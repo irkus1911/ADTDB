@@ -28,7 +28,7 @@ public class Customer implements Serializable{
         this.id = id;
     }
 
-    public long getZip() {
+    public int getZip() {
         return zip;
     }
 
@@ -99,7 +99,19 @@ public class Customer implements Serializable{
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
+    public void getDatos() {
+        System.out.println("Ciudad: " + this.getCity());
+        System.out.println("Email: " + this.getEmail());
+        System.out.println("Nombre: " + this.getFirstName());
+        System.out.println("Apellido: " + this.getLastName());
+        System.out.println("Inicial del sugundo nombre: " + this.middleInitial);
+        System.out.println("Telefono " + this.getPhone());
+        System.out.println("Provincia " + this.getState());
+        System.out.println("Direccion " + this.getStreet());
+        System.out.println("Codigo postal: " + this.getZip());
+    }
+
     
     
 }

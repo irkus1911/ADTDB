@@ -7,6 +7,7 @@ package adtdb;
 
 import adtdb.clases.Account;
 import adtdb.clases.Customer;
+import adtdb.clases.Movement;
 import adtdb.control.Dao;
 import adtdb.control.DaoImplementation;
 import adtdb.utilidades.Util;
@@ -23,11 +24,8 @@ public class ADTDB {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-        int menu;
 
-        Customer cust = null;
-        Account acco = null;
+        int menu;
 
         Dao daoI = new DaoImplementation();
 
@@ -53,56 +51,42 @@ public class ADTDB {
             switch (menu) {
 
                 case 1:
-                    daoI.crearCliente();
+                    crearCliente(daoI);
                     break;
 
                 case 2:
-                    daoI.consultarCliente();
+                    consultarCliente(daoI);
+                    //daoI.consultarCliente();
                     break;
 
                 case 3:
-                    cust = new Customer();
-                    List<Long> cuentas = new ArrayList();
-                    cust.setId(Util.leerLong("Introduce la id del cliente"));
-
-                    cuentas = daoI.consultarCuentaCliente(cust);
-                    System.out.println("Las ids de tus cuentas son:");
-                    for (Long cuenta : cuentas) {
-                        System.out.println(cuenta);
-
-                    }
+                    consultarCuentasCliente(daoI);
                     break;
 
                 case 4:
-                    daoI.crearCuenta(cust);
+                   // daoI.crearCuenta(cust);
                     break;
 
                 case 5:
-                    /*
-                    cust = new Customer();
-                    List<Account> accs = (ArrayList<Account>) daoI.mostrarCuentas();
-                    for(int i = 0; i < accs.size(); i++) {
-                        System.out.print((accs.get(i)).getId());
-                    }
-                    */   
-                    daoI.agregarClienteCuenta(acco, cust);
+
+                    //daoI.agregarClienteCuenta(acco, cust);
                     break;
 
                 case 6:
-                    daoI.consultarDatosCuenta(acco);
+                    //daoI.consultarDatosCuenta(acco);
                     break;
 
                 case 7:
-                    daoI.realizarMovimiento(acco);
+                   // daoI.realizarMovimiento(acco);
                     break;
 
                 case 8:
-                    //consultarMovimientos(daoI);
+                    consultarMovimientos(daoI);
                     break;
             }
         } while (menu != 0);
     }
-    /*
+
     private static void consultarMovimientos(Dao daoI) {
         Account acc = new Account();
         List<Movement> mov = new ArrayList<>();
@@ -111,10 +95,52 @@ public class ADTDB {
         mov = daoI.consultarMovimientos(acc);
 
         for (Movement m : mov) {
-            // no tengo el getdatos unai lo tiene m.getDatos();
+            m.getDatos();
+        }
+    }
+
+    private static void consultarCuentasCliente(Dao daoI) {
+        
+        Customer cust = new Customer();
+        List<Long> cuentas = new ArrayList();
+        cust.setId(Util.leerLong("Introduce la id del cliente"));
+
+        cuentas = daoI.consultarCuentaCliente(cust);
+        System.out.println("Las ids de tus cuentas son:");
+        for (Long cuenta : cuentas) {
+            System.out.println(cuenta);
 
         }
     }
-    }*/
 
-     }
+    private static void consultarCliente(Dao daoI) {
+        
+        Customer cust = daoI.consultarCliente();
+        cust.getDatos();
+        
+        
+    }
+    
+    private static void crearCliente(Dao daoI) {
+
+        Customer cust = new Customer();
+
+        cust.setCity(Util.introducirCadena("Introduce tu ciudad:"));
+        cust.setEmail(Util.introducirCadena("Introduce tu tu email:"));
+        cust.setFirstName(Util.introducirCadena("Introduce tu nombre:"));
+        cust.setLastName(Util.introducirCadena("Introduce tu apellido:"));
+        cust.setMiddleInitial(Util.introducirCadena("Introduce tu inicial de "
+                + "segundo nombre:"));
+        cust.setPhone(Util.leerLong("Introduce tu telefono:"));
+        cust.setState(Util.introducirCadena("Introduce tu provincia"));
+        cust.setStreet(Util.introducirCadena("Introduce tu direccion"));
+        cust.setZip(Util.leerInt("Introduce tu codigo postal"));
+
+        daoI.crearCliente(cust);
+        System.out.println("Se ha creado el cliente con la siguiente "
+                + "informacion:");
+        cust.getDatos();
+
+    }
+    
+}

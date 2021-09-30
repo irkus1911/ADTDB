@@ -62,7 +62,13 @@ public class Movement implements Serializable{
         this.description = description;
     }
     
-    
+     public  void getDatos(){
+        System.out.println("Id: " + this.getId());
+        System.out.println("Descripcion " + this.getDescription());
+        System.out.println("Importe " + this.getAmount());
+        System.out.println("Saldo " + this.getBalance());
+        System.out.println("Fecha " + this.getDatabaseDate());
+    }
     
     
     

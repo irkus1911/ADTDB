@@ -50,14 +50,13 @@ public class DaoImplementation implements Dao {
     private final String buscarMovimientos = "select * from movement where account_id = ?";
     private final String consultarIdCuentaCliente = "select accounts_id from customer_account where customers_id=?";
 
-    private final String mostrarCuentas = "select * from account";
-
+    //private final String mostrarCuentas = "select * from account";
     public void openConnection() {
 
         try {
             con = DriverManager.getConnection(this.url, this.user, this.pass);
         } catch (SQLException e) {
-            System.out.println("Error al intentar abrir la BD");
+            System.out.println("Error al intentar abrir la BD" + e);
         }
 
     }
@@ -75,6 +74,7 @@ public class DaoImplementation implements Dao {
 
     private Customer comprobarIdCliente(Customer cli) throws SQLException {
 
+        Customer cust = null;
         ResultSet rs = null;
 
         this.openConnection();
@@ -83,48 +83,61 @@ public class DaoImplementation implements Dao {
             stat = con.prepareStatement(buscarIdCliente);
             stat.setLong(1, cli.getId());
             rs = stat.executeQuery();
-            if (rs == null) {
+            if (rs.next()) {
+                cust = new Customer();
+                cust.setId(rs.getLong("id"));
+                cust.setCity(rs.getString("city"));
+                cust.setEmail(rs.getString("email"));
+                cust.setFirstName(rs.getString("firstName"));
+                cust.setLastName(rs.getString("lastName"));
+                cust.setMiddleInitial(rs.getString("middleInitial"));
+                cust.setPhone(rs.getLong("phone"));
+                cust.setState(rs.getString("state"));
+                cust.setStreet(rs.getString("street"));
+                cust.setZip(rs.getInt("zip"));
+            } else {       
                 return null;
-            } else {
-                Customer cust = new Customer();
-                cust.setId(rs.getLong("customer.id"));
-                cust.setCity(rs.getString("customer.city"));
-                cust.setEmail(rs.getString("customer.email"));
-                cust.setFirstName(rs.getString("customer.firstName"));
-                cust.setLastName(rs.getString("customer.lastName"));
-                cust.setMiddleInitial(rs.getString("customer.middleName"));
-                cust.setPhone(rs.getLong("customer.phone"));
-                cust.setState(rs.getString("customer.state"));
-                cust.setStreet(rs.getString("customer.street"));
-                cust.setZip(rs.getInt("customer.zip"));
             }
 
         } catch (SQLException ex) {
             Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        this.closeConnection();
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            this.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return cli;
     }
 
     @Override
-    public void crearCliente() {
+    public void crearCliente(Customer cust) {
 
         this.openConnection();
-        
+
         try {
 
             stat = con.prepareStatement(insertarCliente);
 
-            stat.setString(1, Util.introducirCadena("Introduce tu ciudad:"));
-            stat.setString(2, Util.introducirCadena("Introduce tu tu email:"));
-            stat.setString(3, Util.introducirCadena("Introduce tu nombre:"));
-            stat.setString(4, Util.introducirCadena("Introduce tu apellido:"));
-            stat.setString(5, Util.introducirCadena("Introduce tu inicial de segundo nombre:"));
-            stat.setLong(6, Util.leerLong("Introduce tu telefono:"));
-            stat.setString(7, Util.introducirCadena("Introduce tu provincia"));
-            stat.setString(8, Util.introducirCadena("Introduce tu direccion"));
-            stat.setString(9, Util.introducirCadena("Introduce tu codigo postal"));
+            stat.setString(1, cust.getCity());
+            stat.setString(2, cust.getEmail());
+            stat.setString(3, cust.getFirstName());
+            stat.setString(4, cust.getLastName());
+            stat.setString(5, cust.getMiddleInitial());
+            stat.setLong(6, cust.getPhone());
+            stat.setString(7, cust.getState());
+            stat.setString(8, cust.getStreet());
+            stat.setInt(9, cust.getZip());
 
             stat.executeUpdate();
 
@@ -189,7 +202,7 @@ public class DaoImplementation implements Dao {
 
     @Override
     public void agregarClienteCuenta(Account acco, Customer cust) {
-        
+
     }
 
     @Override
@@ -207,6 +220,7 @@ public class DaoImplementation implements Dao {
     public List consultarMovimientos(Account acco) {
 
         List<Movement> movements = new ArrayList<>();
+        Movement mov;
         ResultSet rs = null;
 
         this.openConnection();
@@ -218,7 +232,7 @@ public class DaoImplementation implements Dao {
 
             while (rs.next()) {
 
-                Movement mov = new Movement();
+                mov = new Movement();
 
                 mov.setId(rs.getLong("movement.id"));
                 mov.setAmount(rs.getLong("movement.amount"));
@@ -294,6 +308,5 @@ public class DaoImplementation implements Dao {
         return cuentas;
 
     }
-    */
-
+     */
 }

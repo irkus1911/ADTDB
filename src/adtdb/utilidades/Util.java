@@ -181,7 +181,7 @@ public class Util {
 				num=Long.parseLong(introducirCadena());
 			}
 			catch(NumberFormatException e){
-				System.out.println("Error, el dato no es num�rico. Introduce de nuevo: ");
+				System.out.println("Error, el dato no es numerico. Introduce de nuevo: ");
 				error=true;
 			}
 		}while(error);

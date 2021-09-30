@@ -11,8 +11,11 @@ import adtdb.clases.Movement;
 import adtdb.control.Dao;
 import adtdb.control.DaoImplementation;
 import adtdb.utilidades.Util;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -64,7 +67,7 @@ public class ADTDB {
                     break;
 
                 case 4:
-                   // daoI.crearCuenta(cust);
+                    // daoI.crearCuenta(cust);
                     break;
 
                 case 5:
@@ -77,7 +80,7 @@ public class ADTDB {
                     break;
 
                 case 7:
-                   // daoI.realizarMovimiento(acco);
+                    // daoI.realizarMovimiento(acco);
                     break;
 
                 case 8:
@@ -100,7 +103,7 @@ public class ADTDB {
     }
 
     private static void consultarCuentasCliente(Dao daoI) {
-        
+
         Customer cust = new Customer();
         List<Long> cuentas = new ArrayList();
         cust.setId(Util.leerLong("Introduce la id del cliente"));
@@ -114,13 +117,18 @@ public class ADTDB {
     }
 
     private static void consultarCliente(Dao daoI) {
-        
-        Customer cust = daoI.consultarCliente();
-        cust.getDatos();
-        
-        
+
+        Customer cli = new Customer();
+        cli.setId(Util.leerLong("Introduce la id del cliente a buscar:"));
+
+        if (daoI.consultarCliente(cli) == null) {
+            System.out.println("El cliente no se ha encontrado");
+        } else {
+            cli.getDatos();
+        }
+
     }
-    
+
     private static void crearCliente(Dao daoI) {
 
         Customer cust = new Customer();
@@ -142,5 +150,5 @@ public class ADTDB {
         cust.getDatos();
 
     }
-    
+
 }

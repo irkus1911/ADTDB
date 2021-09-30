@@ -72,6 +72,7 @@ public class DaoImplementation implements Dao {
 
     }
 
+    /*
     private Customer comprobarIdCliente(Customer cli) throws SQLException {
 
         Customer cust = null;
@@ -83,6 +84,7 @@ public class DaoImplementation implements Dao {
             stat = con.prepareStatement(buscarIdCliente);
             stat.setLong(1, cli.getId());
             rs = stat.executeQuery();
+            
             if (rs.next()) {
                 cust = new Customer();
                 cust.setId(rs.getLong("id"));
@@ -119,7 +121,7 @@ public class DaoImplementation implements Dao {
 
         return cli;
     }
-
+     */
     @Override
     public void crearCliente(Customer cust) {
 
@@ -154,18 +156,51 @@ public class DaoImplementation implements Dao {
     }
 
     @Override
-    public Customer consultarCliente() {
+    public Customer consultarCliente(Customer cli) {
 
-        Customer cli = new Customer();
-        cli.setId(Util.leerLong("Introduce la id del cliente a buscar:"));
+        Customer cust = null;
+        ResultSet rs = null;
+
+        this.openConnection();
 
         try {
-            if (comprobarIdCliente(cli) == null) {
-                System.out.println("El cliente no se ha encontrado");
+
+            stat = con.prepareStatement(buscarIdCliente);
+            stat.setLong(1, cli.getId());
+            rs = stat.executeQuery();
+
+            if (rs.next()) {
+                cust = new Customer();
+                cust.setId(rs.getLong("id"));
+                cust.setCity(rs.getString("city"));
+                cust.setEmail(rs.getString("email"));
+                cust.setFirstName(rs.getString("firstName"));
+                cust.setLastName(rs.getString("lastName"));
+                cust.setMiddleInitial(rs.getString("middleInitial"));
+                cust.setPhone(rs.getLong("phone"));
+                cust.setState(rs.getString("state"));
+                cust.setStreet(rs.getString("street"));
+                cust.setZip(rs.getInt("zip"));
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            this.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return cli;
     }
 

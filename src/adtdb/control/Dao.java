@@ -16,7 +16,7 @@ import java.util.List;
 public interface Dao {
     
     public void crearCliente(Customer cust);
-    public Customer consultarCliente();
+    public Customer consultarCliente(Customer cust);
     public List consultarCuentaCliente(Customer cust);
     public void crearCuenta(Customer cust);
     public void agregarClienteCuenta(Account acco, Customer cust);

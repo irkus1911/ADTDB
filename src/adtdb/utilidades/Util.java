@@ -172,7 +172,7 @@ public class Util {
 	}
         
         public static long leerLong(String mensaje){
-		long num=0;
+		long num = 0;
 		boolean error;
 		System.out.println(mensaje);
 		do{

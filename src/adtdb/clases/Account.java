@@ -78,5 +78,19 @@ public class Account implements Serializable{
     public void setType(AccountType type) {
         this.type = type;
     }
+
+    public void getDatos() {
+        
+        System.out.println("---------DATOS CUENTA---------");
+        System.out.println("Id: " + this.getId());
+        System.out.println("Descripcion: " + this.getDescription());
+        System.out.println("Balance: " + this.getBalance());
+        System.out.println("Linea de credito: " + this.getCreditLine());
+        System.out.println("Balance inicial: " + this.getBeginBalance());
+        System.out.println("Fecha del balance inicial: " + this.getBeginBalanceTimestamp());
+        System.out.println("Tipo: " + this.getType());
+        
+        
+    }
     
 }

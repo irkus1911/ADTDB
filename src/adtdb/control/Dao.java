@@ -7,6 +7,7 @@ package adtdb.control;
 
 import adtdb.clases.Account;
 import adtdb.clases.Customer;
+import adtdb.clases.Movement;
 import java.util.List;
 
 /**
@@ -15,13 +16,14 @@ import java.util.List;
  */
 public interface Dao {
     
-    public void crearCliente(Customer cust);
-    public Customer consultarCliente(Customer cust);
-    public List consultarCuentaCliente(Customer cust);
-    public void crearCuenta(Customer cust);
-    public void agregarClienteCuenta(Account acco, Customer cust);
-    public Account consultarDatosCuenta(Account acco);
-    public void realizarMovimiento(Account acco);
+    public void crearCliente(Customer cust); //LISTO
+    public Customer consultarCliente(Customer cust); //LISTO
+    public List consultarCuentaCliente(Customer cust); //LISTO
+    public void crearCuenta(Account acc, Customer cust); //LISTO
+    public void agregarClienteCuenta(Account acc, Customer cust); //LISTO
+    public Account consultarCuenta(Account acco); //LISTO
+    public void realizarMovimiento(Movement mov, Account acco);
     public List consultarMovimientos(Account acco);
+
     
 }

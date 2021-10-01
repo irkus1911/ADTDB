@@ -12,16 +12,16 @@ import java.sql.Timestamp;
  *
  * @author 2dam
  */
-public class Movement implements Serializable{
-    
+public class Movement implements Serializable {
+
     private long id;
     private Timestamp databaseDate;
-    private float amount,balance;
+    private float amount, balance;
     private String description;
 
     public Movement() {
     }
-    
+
     public long getId() {
         return id;
     }
@@ -61,16 +61,14 @@ public class Movement implements Serializable{
     public void setDescription(String description) {
         this.description = description;
     }
-    
-     public  void getDatos(){
+
+    public void getDatos() {
+        System.out.println("---------DATOS MOVIMIENTO---------");
         System.out.println("Id: " + this.getId());
-        System.out.println("Descripcion " + this.getDescription());
-        System.out.println("Importe " + this.getAmount());
-        System.out.println("Saldo " + this.getBalance());
-        System.out.println("Fecha " + this.getDatabaseDate());
+        System.out.println("Descripcion: " + this.getDescription());
+        System.out.println("Importe: " + this.getAmount());
+        System.out.println("Saldo: " + this.getBalance());
+        System.out.println("Fecha: " + this.getDatabaseDate());
     }
-    
-    
-    
-    
+
 }

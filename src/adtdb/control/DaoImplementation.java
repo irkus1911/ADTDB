@@ -46,11 +46,17 @@ public class DaoImplementation implements Dao {
 
     //SENTENCIAS SQL
     private final String insertarCliente = "insert into customer (city,email,firstName,lastName,middleInitial,phone,state,street,zip) values (?,?,?,?,?,?,?,?,?)";
-    private final String buscarIdCliente = "select * from customer where id = ?";
+    private final String insertarMovimiento = "INSERT INTO movement (amount,balance,description,timestamp,account_id) VALUES (?,?,?,?,?)";
+    private final String buscarCliente = "SELECT * FROM customer WHERE id = ?";
+    private final String buscarCuenta = "SELECT * FROM account WHERE id = ?";
     private final String buscarMovimientos = "select * from movement where account_id = ?";
     private final String consultarIdCuentaCliente = "select accounts_id from customer_account where customers_id=?";
+    private final String ultimaIdCliente = "SELECT id FROM customer ORDER BY id DESC LIMIT 1";
+    private final String ultimaIdCuenta = "SELECT id FROM account ORDER BY id DESC LIMIT 1";
+    private final String ultimaIdMovimiento = "SELECT id FROM movement ORDER BY id DESC LIMIT 1";
+    private final String agregarIdCuentaCliente = "INSERT INTO customer_account VALUES (?,?)";
+    private final String crearCuenta = "insert into account (balance,beginBalance,beginBalanceTimeStamp,creditLine,description,type) values (?,?,?,?,?,?)";
 
-    //private final String mostrarCuentas = "select * from account";
     public void openConnection() {
 
         try {
@@ -72,56 +78,6 @@ public class DaoImplementation implements Dao {
 
     }
 
-    /*
-    private Customer comprobarIdCliente(Customer cli) throws SQLException {
-
-        Customer cust = null;
-        ResultSet rs = null;
-
-        this.openConnection();
-        try {
-
-            stat = con.prepareStatement(buscarIdCliente);
-            stat.setLong(1, cli.getId());
-            rs = stat.executeQuery();
-            
-            if (rs.next()) {
-                cust = new Customer();
-                cust.setId(rs.getLong("id"));
-                cust.setCity(rs.getString("city"));
-                cust.setEmail(rs.getString("email"));
-                cust.setFirstName(rs.getString("firstName"));
-                cust.setLastName(rs.getString("lastName"));
-                cust.setMiddleInitial(rs.getString("middleInitial"));
-                cust.setPhone(rs.getLong("phone"));
-                cust.setState(rs.getString("state"));
-                cust.setStreet(rs.getString("street"));
-                cust.setZip(rs.getInt("zip"));
-            } else {       
-                return null;
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            this.closeConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return cli;
-    }
-     */
     @Override
     public void crearCliente(Customer cust) {
 
@@ -153,6 +109,40 @@ public class DaoImplementation implements Dao {
             Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        insertarUltimaIdCliente(cust);
+
+    }
+
+    public void insertarUltimaIdCliente(Customer cust) {
+
+        ResultSet rs = null;
+        this.openConnection();
+
+        try {
+
+            stat = con.prepareStatement(ultimaIdCliente);
+            rs = stat.executeQuery();
+            if (rs.next()) {
+                cust.setId(rs.getLong("id"));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            this.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -160,12 +150,11 @@ public class DaoImplementation implements Dao {
 
         Customer cust = null;
         ResultSet rs = null;
-
         this.openConnection();
 
         try {
 
-            stat = con.prepareStatement(buscarIdCliente);
+            stat = con.prepareStatement(buscarCliente);
             stat.setLong(1, cli.getId());
             rs = stat.executeQuery();
 
@@ -200,8 +189,7 @@ public class DaoImplementation implements Dao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return cli;
+        return cust;
     }
 
     @Override
@@ -218,7 +206,7 @@ public class DaoImplementation implements Dao {
             if (rs != null) {
                 while (rs.next()) {
                     Account ac = new Account();
-                    ac.setId(rs.getLong("customer_account.accounts_id"));
+                    ac.setId(rs.getLong("accounts_id"));
                     li.add(ac.getId());
                 }
 
@@ -231,53 +219,26 @@ public class DaoImplementation implements Dao {
     }
 
     @Override
-    public void crearCuenta(Customer cust) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void agregarClienteCuenta(Account acco, Customer cust) {
-
-    }
-
-    @Override
-    public Account consultarDatosCuenta(Account acco) {
-        //Lo hace adrian
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void realizarMovimiento(Account acco) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List consultarMovimientos(Account acco) {
-
-        List<Movement> movements = new ArrayList<>();
-        Movement mov;
-        ResultSet rs = null;
+    public void crearCuenta(Account acc, Customer cust) {
 
         this.openConnection();
+
         try {
 
-            stat = con.prepareStatement(buscarMovimientos);
-            stat.setLong(1, acco.getId());
-            rs = stat.executeQuery();
+            stat = con.prepareStatement(crearCuenta);
 
-            while (rs.next()) {
-
-                mov = new Movement();
-
-                mov.setId(rs.getLong("movement.id"));
-                mov.setAmount(rs.getLong("movement.amount"));
-                mov.setBalance(rs.getFloat("movement.balance"));
-                mov.setDescription(rs.getString("movement.description"));
-                mov.setDatabaseDate(rs.getTimestamp("movement.timestamp"));
-
-                movements.add(mov);
-
+            stat.setFloat(1, acc.getBalance());
+            stat.setFloat(2, acc.getBeginBalance());
+            stat.setTimestamp(3, acc.getBeginBalanceTimestamp());
+            stat.setFloat(4, acc.getCreditLine());
+            stat.setString(5, acc.getDescription());
+            if (acc.getType() == AccountType.STANDARD) {
+                stat.setInt(6, 0);
+            } else {
+                stat.setInt(6, 1);
             }
+
+            stat.executeUpdate();
 
         } catch (SQLException ex) {
             Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
@@ -289,39 +250,24 @@ public class DaoImplementation implements Dao {
             Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return movements;
+        insertarUltimaIdCuenta(acc);
+        agregarIdCuentaCliente(acc, cust);
+
     }
 
-    //MOSTRAR TODAS LAS CUENTAS
-    /*
-    @Override
-    public List mostrarCuentas() {
+    public void insertarUltimaIdCuenta(Account acc) {
 
-        List<Account> cuentas = new ArrayList<>();
-        Account acc = null;
         ResultSet rs = null;
-
         this.openConnection();
-        
-        try {
-            stat = con.prepareStatement(mostrarCuentas);
-            rs = stat.executeQuery();
 
-            while (rs.next()) {             
-                acc = new Account();
+        try {
+
+            stat = con.prepareStatement(ultimaIdCuenta);
+            rs = stat.executeQuery();
+            if (rs.next()) {
                 acc.setId(rs.getLong("id"));
-                acc.setDescription(rs.getString("description"));
-                acc.setBalance(rs.getFloat("balance"));
-                acc.setCreditLine(rs.getFloat("creditLine"));
-                acc.setBeginBalance(rs.getFloat("beginBalance"));
-                acc.setBeginBalanceTimestamp(rs.getTimestamp("beingBalanceTimestamp"));          
-                if (rs.getInt("type") == 1) {
-                    acc.setType(AccountType.CREDIT);
-                } else {
-                    acc.setType(AccountType.STANDARD);
-                }        
-                cuentas.add(acc);
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -339,9 +285,189 @@ public class DaoImplementation implements Dao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
-        return cuentas;
+    public void agregarIdCuentaCliente(Account acc, Customer cust) {
+
+        this.openConnection();
+
+        try {
+
+            stat = con.prepareStatement(agregarIdCuentaCliente);
+            stat.setLong(1, cust.getId());
+            stat.setLong(2, acc.getId());
+
+            stat.executeUpdate();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            this.closeConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
-     */
+
+    @Override
+    public void agregarClienteCuenta(Account acc, Customer cust) {
+
+        agregarIdCuentaCliente(acc, cust);
+
+    }
+
+    @Override
+    public Account consultarCuenta(Account acco) {
+
+        Account acc = null;
+        ResultSet rs = null;
+        this.openConnection();
+
+        try {
+
+            stat = con.prepareStatement(buscarCuenta);
+            stat.setLong(1, acco.getId());
+            rs = stat.executeQuery();
+
+            if (rs.next()) {
+                acc = new Account();
+                acc.setId(rs.getLong("id"));
+                acc.setBalance(rs.getFloat("balance"));
+                acc.setBeginBalance(rs.getFloat("beginBalance"));
+                acc.setBeginBalanceTimestamp(rs.getTimestamp("beginBalanceTimestamp"));
+                acc.setCreditLine(rs.getFloat("creditLine"));
+                acc.setDescription(rs.getString("description"));
+                if (rs.getInt("type") == 1) {
+                    acc.setType(AccountType.CREDIT);
+                } else {
+                    acc.setType(AccountType.STANDARD);
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            this.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return acc;
+    }
+
+    @Override
+    public void realizarMovimiento(Movement mov, Account acco) {
+
+        this.openConnection();
+
+        try {
+
+            stat = con.prepareStatement(insertarMovimiento);
+
+            stat.setFloat(1, mov.getAmount());
+            stat.setFloat(2, mov.getBalance());
+            stat.setString(3, mov.getDescription());
+            stat.setTimestamp(4, mov.getDatabaseDate());
+            stat.setLong(5, acco.getId());
+
+            stat.executeUpdate();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            this.closeConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        insertarUltimaIdMovimiento(mov);
+        
+    }
+
+    public void insertarUltimaIdMovimiento(Movement mov) {
+
+        ResultSet rs = null;
+        this.openConnection();
+
+        try {
+
+            stat = con.prepareStatement(ultimaIdMovimiento);
+            rs = stat.executeQuery();
+            if (rs.next()) {
+                mov.setId(rs.getLong("id"));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            this.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public List consultarMovimientos(Account acco) {
+        List<Movement> movements = new ArrayList<>();
+        Movement mov;
+        ResultSet rs = null;
+
+        this.openConnection();
+        try {
+
+            stat = con.prepareStatement(buscarMovimientos);
+            stat.setLong(1, acco.getId());
+            rs = stat.executeQuery();
+
+            while (rs.next()) {
+
+                mov = new Movement();
+
+                mov.setId(rs.getLong("id"));
+                mov.setAmount(rs.getLong("amount"));
+                mov.setBalance(rs.getFloat("balance"));
+                mov.setDescription(rs.getString("description"));
+                mov.setDatabaseDate(rs.getTimestamp("timestamp"));
+
+                movements.add(mov);
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            this.closeConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return movements;
+         
+    }
+
 }

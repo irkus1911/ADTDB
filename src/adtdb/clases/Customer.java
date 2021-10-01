@@ -7,6 +7,7 @@ package adtdb.clases;
 
 import java.io.Serializable;
 
+
 /**
  *
  * @author 2dam
@@ -101,11 +102,13 @@ public class Customer implements Serializable{
     }
 
     public void getDatos() {
+        System.out.println("---------DATOS CLIENTE---------");
+        System.out.println("Id: " + this.getId());
         System.out.println("Ciudad: " + this.getCity());
         System.out.println("Email: " + this.getEmail());
         System.out.println("Nombre: " + this.getFirstName());
         System.out.println("Apellido: " + this.getLastName());
-        System.out.println("Inicial del sugundo nombre: " + this.middleInitial);
+        System.out.println("Inicial del sugundo nombre: " + this.getMiddleInitial());
         System.out.println("Telefono " + this.getPhone());
         System.out.println("Provincia " + this.getState());
         System.out.println("Direccion " + this.getStreet());

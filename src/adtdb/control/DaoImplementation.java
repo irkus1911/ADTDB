@@ -35,7 +35,7 @@ public class DaoImplementation implements Dao{
     
     public DaoImplementation() {
         
-        configFile = ResourceBundle.getBundle("bancoadt.conection.config");
+        configFile = ResourceBundle.getBundle("adtdb.control.config");
         url = configFile.getString("Conn");
         user = configFile.getString("DBUser");
         pass = configFile.getString("DBPass");
@@ -86,8 +86,9 @@ public class DaoImplementation implements Dao{
     private final String buscarIdCliente = "select * from customer where id = ?";
     private final String buscarMovimientos = "select * from movement where account_id = ?";
     private final String consultarIdCuentaCliente= "select accounts_id from customer_account where customers_id=?";
-   
-  
+   private final String crearCuenta = "insert into account (id,description,balance,creditLine,beginBalance,beginBalanceTimeStamp,,type) values (?,?,?,?,?,?,?)";
+   private final String consultarDatosCuenta="select * from account where id=?";
+
    
     private Customer comprobarIdCliente(Customer cli) {
         
@@ -216,7 +217,25 @@ public class DaoImplementation implements Dao{
 
     @Override
     public void crearCuenta(Customer cust) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      ResultSet rs = null;  
+        try {
+            con=openConnection();
+        } catch (ConnectException ex) {
+            System.out.println("Error al abrir la conexion con la BD");
+        }
+         try {
+        stat = con.prepareStatement(crearCuenta);
+        stat.setInt(1, Util.leerInt("Introduce el ID de la cuenta: "));
+        stat.setString(2, "Introduce una descripcion: ");
+        stat.setFloat(3, Util.leerFloat("Introduce el balance: "));
+        stat.setFloat(4, Util.leerFloat("Introduce la linea de credito: "));
+        stat.setFloat(5, Util.leerFloat("Introduce el balance inicial: "));
+        
+        rs=stat.executeQuery();
+         } catch (SQLException ex) {
+             Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+         }
+         
     }
 
     @Override
@@ -226,8 +245,34 @@ public class DaoImplementation implements Dao{
     
     @Override
     public Account consultarDatosCuenta(Account acco) {
-        //Lo hace adrian
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      List <Account> cuentas = new ArrayList<>();
+      ResultSet rs =null;
+      
+         try {
+             this.openConnection();
+         } catch (ConnectException ex) {
+             System.out.println("Error al conectar con la BD");
+         }
+         try {
+             stat= con.prepareStatement(consultarDatosCuenta);
+             stat.setLong(1, acco.getId());
+             rs=stat.executeQuery();
+             
+             while(rs.next()){
+                 acco.setId(rs.getLong("account.id"));
+                 acco.setDescription(rs.getString("account.description"));
+                 acco.setBalance(rs.getFloat("account.balance"));
+                 acco.setCreditLine(rs.getFloat("account.creditLine"));
+                 acco.setBeginBalance(rs.getFloat("account.beginBalance"));
+                 acco.setBeginBalanceTimestamp(rs.getTimestamp("account.beginBalanceTimestamp"));
+                
+             }
+         } catch (SQLException ex) {
+             Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+         }
+      
+      
+         return (Account) cuentas;
     }
 
     @Override
